@@ -1,0 +1,19 @@
+Package: cg12r
+Type: Package
+Title: Parse CG12 Instrument Results
+Version: 0.1.0
+Author: Nicolas P.J. Coutin <nicolas.coutin@gmail.com>
+Maintainer: Nicolas P.J. Coutin <nicolas.coutin@gmail.com>
+Description: CG12 instrument outputs results to a text file. This package parses
+    those text files into a format that is more easily analyzed.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+Imports: tibble,
+    dplyr,
+    tidyr,
+    purrr,
+    readr,
+    stringr
+Suggests: testthat
+RoxygenNote: 6.0.1.9000

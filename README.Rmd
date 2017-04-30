@@ -1,0 +1,62 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+## usage
+```{r, eval = FALSE}
+file <- cg12_example("SR1_results.txt")
+read_cg12(file) %>% 
+    bind_rows() %>% 
+    write_csv("tidy-sr1-results.csv")
+```
+
+
+First, install the necessary tools:
+```{r install, eval = FALSE}
+install.packages(c("devtools", "tidyverse"))
+devtools::install_github("npjc/cg12r")
+```
+
+```{r load}
+library(tidyverse)
+library(cg12r)
+```
+
+## Examples
+
+#### Example
+
+```{r example1}
+file <- cg12_example("SR1_results.txt")
+read_lines(file, n_max = 50) %>% cat(sep = '\n')
+read_cg12(file) %>% head()
+read_cg12(file) %>% bind_rows()
+```
+
+
+```{r example2}
+file <- cg12_example("SR1_results-2.txt")
+read_lines(file, n_max = 50) %>% cat(sep = '\n')
+read_cg12(file) %>% head()
+read_cg12(file) %>% bind_rows()
+```
+
+```{r example3}
+file <- cg12_example("SR1_results-3.txt")
+read_lines(file, n_max = 50) %>% cat(sep = '\n')
+read_cg12(file) %>% head()
+read_cg12(file) %>% bind_rows()
+```
+
+
+
