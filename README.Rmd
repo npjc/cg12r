@@ -4,59 +4,39 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+[![CRAN status](http://www.r-pkg.org/badges/version/cg12r)](https://cran.r-project.org/package=cg12r)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
+  comment = "#|",
   fig.path = "README-"
 )
 ```
 
 ## usage
-```{r, eval = FALSE}
-file <- cg12_example("SR1_results.txt")
-read_cg12(file) %>% 
-    bind_rows() %>% 
-    write_csv("tidy-sr1-results.csv")
-```
 
-
-First, install the necessary tools:
-```{r install, eval = FALSE}
-install.packages(c("devtools", "tidyverse"))
-devtools::install_github("npjc/cg12r")
-```
-
-```{r load}
-library(tidyverse)
+```{r}
 library(cg12r)
-```
-
-## Examples
-
-#### Example
-
-```{r example1}
-file <- cg12_example("SR1_results.txt")
-read_lines(file, n_max = 50) %>% cat(sep = '\n')
-read_cg12(file) %>% head()
-read_cg12(file) %>% bind_rows()
+cg12_example("12x96MTP_example.txt")
+file <- cg12_example("12x96MTP_example.txt")
+data <- read_cg12(file)
+data
 ```
 
 
-```{r example2}
-file <- cg12_example("SR1_results-2.txt")
-read_lines(file, n_max = 50) %>% cat(sep = '\n')
-read_cg12(file) %>% head()
-read_cg12(file) %>% bind_rows()
+### under development
+
+plot plate-level variables onto the physical carousel layout
+```{r, eval=FALSE}
+plot_carousel()
+# data %>% 
+#   group_by(plate) %>% 
+#   summarise(nwells = length(unique(well)), nmeas = length(unique(datetime))) %>% 
+#   plot_carousel()
 ```
 
-```{r example3}
-file <- cg12_example("SR1_results-3.txt")
-read_lines(file, n_max = 50) %>% cat(sep = '\n')
-read_cg12(file) %>% head()
-read_cg12(file) %>% bind_rows()
-```
-
-
-
+<p align="center">
+  <img src="inst/extdata/carousel.svg" alt="carousel" height="800px">
+</p>

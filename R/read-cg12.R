@@ -1,4 +1,4 @@
-#' read results file output from cg12 instrument and output a tidy data frame
+#' read results file output from cg12 instrument and output a tidy data frame.
 #'
 #' @param file <chr> path to results file
 #'
@@ -6,67 +6,22 @@
 #'   A data frame (tibble).
 #'
 #' @examples
-#'   # read_cg12("SR1_results.txt")
+#'   # read_cg12("12x96MTP_example.txt")
 #'
 #' @export
 read_cg12 <- function(file) {
-    # read in file as string
     string_file <- readr::read_file(file)
-    # parse measurments (one row per section)
-    # matched  section ... Results line ... measurment line ... data matrix
-    r <- '(Results.+)(?:\\r?\\n)+(.+)(?:\\r?\\n)+((?:.+\\r?\\n)+)'
-    m <- stringr::str_match_all(string_file, r)
-    out <- apply(m[[1]], 1, parse_result)
-    out <- lapply(out, tidy_result)
-    out
-}
+    r <- 'Results of (.+)(?:\\r?\\n)+\t?Plate: ([^;]+); Date: ([^;]+); Time: ([^;]+) - Wavelength: (.+)(?:\\r?\\n)+((?:.+\\r?\\n)+)'
 
+    m <- stringr::str_match_all(string_file, r)[[1]][,2:7]
 
+    wells <- tibble::tibble(meas_value = purrr::map(stringr::str_extract_all(m[,6], "[\\d\\.]+"), as.double),
+                            well = purrr::map(meas_value, mtp_labels_from_length))
 
-tidy_result <- function(x) {
-    d <- tibble::as_tibble(x)
-    d <- dplyr::select(d, -original_match)
-    d <- tidyr::unnest(d, measurment_header)
-    d <- tidyr::unnest(d, measurment_data)
-    d
-}
-
-
-
-parse_result <- function(x) {
-    original_match <- x[1]
-    instrument_header <- x[2]
-    measurment_header <- parse_measurment_header(x[3])
-    measurment_data <- parse_measurment_data(x[4])
-
-    l <- list(original_match = original_match,
-              instrument_header = instrument_header,
-              measurment_header = list(measurment_header),
-              measurment_data = list(measurment_data))
-    l
-}
-
-parse_measurment_header <- function(x) {
-    r <- '\tPlate: ([^;]+); Date: ([^;]+); Time: ([^ ]+) - Wavelength: (.+)'
-    var_names <- c("plate", "date", "time", "wavelength")
-
-    no_match_detected <- !stringr::str_detect(x, r)
-    if(no_match_detected) {
-        # for results directly from ThermoSkan FC
-        r <- '\tPlate: ([^;]+) - Wavelength: (.+)'
-        var_names <- c("plate", "wavelength")
-    }
-
-    l <- as.list(stringr::str_match(x, r)[-1])
-    l <- purrr::set_names(l, var_names)
-    tibble::as_tibble(l)
-}
-
-parse_measurment_data <- function(x) {
-    d <- readr::read_tsv(x, col_names = F, col_types = readr::cols(.default = readr::col_double()))
-    d <- purrr::set_names(d, c("spacer", seq_len(length(d) - 1)))
-    d <- dplyr::select(d, -spacer)
-    d <- dplyr::mutate(d, plate_row_int = row_number())
-    d <- tidyr::gather(d, plate_col_int, measurment, -plate_row_int, convert = T)
-    d
+    data <- tibble::tibble(instrument = paste0("CG12-", m[,1]),
+                           plate = m[,2],
+                           datetime = lubridate::ymd_hms(paste(m[,3], m[,4])),
+                           meas_type = as.integer(m[,5]))
+    out <- tidyr::unnest(dplyr::bind_cols(data, wells))
+    dplyr::select(out, instrument, plate, well, datetime, meas_type, meas_value)
 }
