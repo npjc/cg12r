@@ -11,7 +11,7 @@
 #' @export
 read_cg12 <- function(file) {
     string_file <- readr::read_file(file)
-    r <- 'Results of (.+)(?:\\r?\\n)+\t?Plate: ([^;]+); Date: ([^;]+); Time: ([^;]+) - Wavelength: (.+)(?:\\r?\\n)+((?:.+\\r?\\n)+)'
+    r <- 'Results of (.+)(?:\\r+?\\n+)+\t?Plate: ([^;]+); Date: ([^;]+); Time: ([^;]+) - Wavelength: (.+)(?:\\r+?\\n+)+((?:.+\\r+?\\n+)+)'
 
     m <- stringr::str_match_all(string_file, r)[[1]][,2:7]
 

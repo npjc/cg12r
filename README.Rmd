@@ -4,21 +4,34 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-[![CRAN status](http://www.r-pkg.org/badges/version/cg12r)](https://cran.r-project.org/package=cg12r)
-[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-
-```{r, echo = FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#|",
-  fig.path = "README-"
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
 )
+library(tidyverse)
 ```
 
-## usage
+[![CRAN status](http://www.r-pkg.org/badges/version/readcg12)](https://cran.r-project.org/package=readcg12)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+
+## Installation
+
+<!-- You can install the released version of gp1 from [CRAN](https://CRAN.R-project.org) with: -->
+
+``` r
+# install.packages("readcg12") # not yet
+remotes::install_github("npjc/readcg12")
+```
+
+## Example
+
 
 ```{r}
-library(cg12r)
+library(tidyverse)
+library(readcg12)
 cg12_example("12x96MTP_example.txt")
 file <- cg12_example("12x96MTP_example.txt")
 data <- read_cg12(file)
@@ -31,10 +44,10 @@ data
 plot plate-level variables onto the physical carousel layout
 ```{r, eval=FALSE}
 plot_carousel()
-# data %>% 
-#   group_by(plate) %>% 
-#   summarise(nwells = length(unique(well)), nmeas = length(unique(datetime))) %>% 
-#   plot_carousel()
+data %>%
+  group_by(plate) %>%
+  summarise(nwells = length(unique(well)), nmeas = length(unique(datetime))) %>%
+  plot_carousel()
 ```
 
 <p align="center">

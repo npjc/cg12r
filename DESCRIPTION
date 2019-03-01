@@ -1,10 +1,10 @@
-Package: cg12r
+Package: readcg12
 Type: Package
-Title: Parse CG12 Instrument Results
-Version: 0.1.0
+Title: Read, Validate, Simulate and Write CG-12 instrument files
+Version: 0.0.1
 Author: Nicolas P.J. Coutin <nicolas.coutin@gmail.com>
 Maintainer: Nicolas P.J. Coutin <nicolas.coutin@gmail.com>
-Description: CG12 instrument outputs results to a text file. This package parses
+Description: CG-12 instrument outputs results to a text file. This package parses
     those text files into a format that is more easily analyzed.
 License: What license is it under?
 Encoding: UTF-8

@@ -1,2 +1,2 @@
 library(testthat)
-library(cg12r)
+library(readcg12)
