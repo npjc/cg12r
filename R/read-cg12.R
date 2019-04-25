@@ -1,27 +1,60 @@
-#' read results file output from cg12 instrument and output a tidy data frame.
+#' @importFrom rlang .data
+.data
+
+#' read GP-1 output file into tidy tibble
 #'
-#' @param file <chr> path to results file
+#' @param file `<chr>` path to results file
+#' @param all_fields `<lgl>` should all fields be included? Defaults to [FALSE].
 #'
-#' @value
-#'   A data frame (tibble).
+#' @return
+#' [tibble()] with the following cols:
+#'
+#' - **plate** identifier as found in file,
+#' - **well** identifier,
+#' - **runtime** time since run start in seconds,
+#' - **measure** numeric value of measurement as recorded,
+#'
+#' if `all_fields = TRUE`:
+#'
+#' - **instrument** character string as written to results file,
+#' - **datetime** of measurement in ISO8601 (datetime format),
+#' - **measure_type** the type of measurement; currently this is a stub to
+#' allow for multi-measurement-type results parsing in the future if needed.
 #'
 #' @examples
-#'   # read_cg12("12x96MTP_example.txt")
+#' file <- cg12_example("12x96MTP_example.txt")
+#' read_cg12(file)
+#' read_cg12(file, all_fields = TRUE)
 #'
 #' @export
-read_cg12 <- function(file) {
+read_cg12 <- function(file, all_fields = FALSE) {
     string_file <- readr::read_file(file)
     r <- 'Results of (.+)(?:\\r+?\\n+)+\t?Plate: ([^;]+); Date: ([^;]+); Time: ([^;]+) - Wavelength: (.+)(?:\\r+?\\n+)+((?:.+\\r+?\\n+)+)'
-
     m <- stringr::str_match_all(string_file, r)[[1]][,2:7]
 
-    wells <- tibble::tibble(meas_value = purrr::map(stringr::str_extract_all(m[,6], "[\\d\\.]+"), as.double),
-                            well = purrr::map(meas_value, mtp_labels_from_length))
-
+    wells <- tibble::tibble(measure = purrr::map(stringr::str_extract_all(m[,6], "[\\d\\.]+"), as.double),
+                            well = purrr::map(.data$measure, well_labels_from_length))
     data <- tibble::tibble(instrument = paste0("CG12-", m[,1]),
                            plate = m[,2],
-                           datetime = lubridate::ymd_hms(paste(m[,3], m[,4])),
-                           meas_type = as.integer(m[,5]))
-    out <- tidyr::unnest(dplyr::bind_cols(data, wells))
-    dplyr::select(out, instrument, plate, well, datetime, meas_type, meas_value)
+                           datetime = parse_cg12_datetime(m[,3], m[,4]),
+                           measure_type = as.integer(m[,5]))
+
+    d <- dplyr::bind_cols(data, wells)
+    d <- tidyr::unnest(d)
+    d <- dplyr::group_by(d, .data$plate, .data$well)
+    d <- dplyr::mutate(d, runtime = as.integer(.data$datetime - min(.data$datetime)))
+    d <- dplyr::ungroup(d)
+    d <- dplyr::arrange(d, .data$plate, .data$well, .data$datetime)
+    d <- dplyr::select(d, .data$instrument, .data$plate, .data$well,
+                       .data$datetime, .data$runtime, .data$measure_type,
+                       .data$measure)
+    if (!all_fields) {
+        d <- dplyr::select(d, -.data$instrument, -.data$datetime,
+                           -.data$measure_type)
+    }
+    d
+}
+
+parse_cg12_datetime <- function(date, time) {
+    readr::parse_datetime(paste(date, time), format = "%Y/%m/%d %H:%M:%S")
 }

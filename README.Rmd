@@ -11,11 +11,13 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
-library(tidyverse)
 ```
 
+[![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![CRAN status](http://www.r-pkg.org/badges/version/readcg12)](https://cran.r-project.org/package=readcg12)
-[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+
+Read, ~~Validate~~, ~~Simulate~~ and ~~Write~~ CG-12 instrument files.
+
 
 ## Installation
 
@@ -30,25 +32,32 @@ remotes::install_github("npjc/readcg12")
 
 
 ```{r}
-library(tidyverse)
 library(readcg12)
-cg12_example("12x96MTP_example.txt")
 file <- cg12_example("12x96MTP_example.txt")
-data <- read_cg12(file)
-data
+read_cg12(file)
+read_cg12(file, all_fields = TRUE)
 ```
 
+---
 
-### under development
+### To visualize the parsed output with the `mtpview` pkg:
 
-plot plate-level variables onto the physical carousel layout
-```{r, eval=FALSE}
-plot_carousel()
-data %>%
-  group_by(plate) %>%
-  summarise(nwells = length(unique(well)), nmeas = length(unique(datetime))) %>%
-  plot_carousel()
+```{r eg1plot, echo=TRUE}
+library(mtpview)
+d <- read_cg12(file)
+
+mtp_ggplot(d, aes(plate = plate, well = well)) + 
+  mtp_spec_96well() + 
+  geom_footprint() + 
+  geom_notched_border() + 
+  geom_row_label(size = 1.5) + 
+  geom_col_label(size = 1.5)  +
+  geom_well_rect(fill = 'white') + 
+  geom_well_line(aes(x = runtime, y = measure), size = 0.2) + 
+  facet_wrap(~plate, ncol = 3)
 ```
+
+Info about the carousels
 
 <p align="center">
   <img src="inst/extdata/carousel.svg" alt="carousel" height="800px">

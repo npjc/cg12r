@@ -2,17 +2,36 @@
 % Please edit documentation in R/read-cg12.R
 \name{read_cg12}
 \alias{read_cg12}
-\title{read results file output from cg12 instrument and output a tidy data frame}
+\title{read GP-1 output file into tidy tibble}
 \usage{
-read_cg12(file)
+read_cg12(file, all_fields = FALSE)
 }
 \arguments{
-\item{file}{<chr> path to results file}
+\item{file}{`<chr>` path to results file}
+
+\item{all_fields}{`<lgl>` should all fields be included? Defaults to [FALSE].}
+}
+\value{
+[tibble()] with the following cols:
+
+- **plate** identifier as found in file,
+- **well** identifier,
+- **runtime** time since run start in seconds,
+- **measure** numeric value of measurement as recorded,
+
+if `all_fields = TRUE`:
+
+- **instrument** character string as written to results file,
+- **datetime** of measurement in ISO8601 (datetime format),
+- **measure_type** the type of measurement; currently this is a stub to
+allow for multi-measurement-type results parsing in the future if needed.
 }
 \description{
-read results file output from cg12 instrument and output a tidy data frame
+read GP-1 output file into tidy tibble
 }
 \examples{
-  # read_cg12("SR1_results.txt")
+file <- cg12_example("12x96MTP_example.txt")
+read_cg12(file)
+read_cg12(file, all_fields = TRUE)
 
 }

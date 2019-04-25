@@ -2,19 +2,19 @@
 % Please edit documentation in R/read-cg12-example.R
 \name{cg12_example}
 \alias{cg12_example}
-\title{get example file for pkg demo}
+\title{get a cg12 example data file}
 \usage{
 cg12_example(file)
 }
 \arguments{
-\item{file}{}
+\item{file}{`<chr>` name of the file}
 }
 \description{
-get example file for pkg demo
+get a cg12 example data file
 }
 \examples{
-   cg12_example("SR1_results.txt")
-   cg12_example("SR1_results-2.txt")
-   cg12_example("SR1_results-3.txt")
+cg12_example("12x96MTP_example.txt")
+cg12_example("SR1_results-2.txt")
+cg12_example("SR1_results-3.txt")
 
 }

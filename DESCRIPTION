@@ -2,18 +2,20 @@ Package: readcg12
 Type: Package
 Title: Read, Validate, Simulate and Write CG-12 instrument files
 Version: 0.0.1
-Author: Nicolas P.J. Coutin <nicolas.coutin@gmail.com>
-Maintainer: Nicolas P.J. Coutin <nicolas.coutin@gmail.com>
+Authors@R: person("Nicolas", "Coutin", , "nicolas.coutin@gmail.com", c("aut", "cre"), comment = c(ORCID = "0000-0001-9336-226X"))
+Maintainer: Nicolas Coutin <nicolas.coutin@gmail.com>
 Description: CG-12 instrument outputs results to a text file. This package parses
     those text files into a format that is more easily analyzed.
-License: What license is it under?
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
-Imports: tibble,
+Imports: 
+    tibble,
     dplyr,
     tidyr,
     purrr,
     readr,
-    stringr
+    stringr,
+    rlang
 Suggests: testthat
-RoxygenNote: 6.0.1.9000
+RoxygenNote: 6.1.1
