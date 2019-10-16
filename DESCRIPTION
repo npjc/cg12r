@@ -1,7 +1,7 @@
 Package: readcg12
 Type: Package
 Title: Read, Validate, Simulate and Write CG-12 instrument files
-Version: 0.0.1
+Version: 0.1.0
 Authors@R: person("Nicolas", "Coutin", , "nicolas.coutin@gmail.com", c("aut", "cre"), comment = c(ORCID = "0000-0001-9336-226X"))
 Maintainer: Nicolas Coutin <nicolas.coutin@gmail.com>
 Description: CG-12 instrument outputs results to a text file. This package parses
@@ -16,6 +16,9 @@ Imports:
     purrr,
     readr,
     stringr,
-    rlang
+    rlang,
+    mtputils (>= 0.1.0)
 Suggests: testthat
 RoxygenNote: 6.1.1
+Remotes:  
+    npjc/mtputils

@@ -33,14 +33,14 @@ read_cg12 <- function(file, all_fields = FALSE) {
     m <- stringr::str_match_all(string_file, r)[[1]][,2:7]
 
     wells <- tibble::tibble(measure = purrr::map(stringr::str_extract_all(m[,6], "[\\d\\.]+"), as.double),
-                            well = purrr::map(.data$measure, well_labels_from_length))
+                            well = purrr::map(.data$measure, mtputils::well_labels_from_length))
     data <- tibble::tibble(instrument = paste0("CG12-", m[,1]),
                            plate = m[,2],
                            datetime = parse_cg12_datetime(m[,3], m[,4]),
                            measure_type = as.integer(m[,5]))
 
     d <- dplyr::bind_cols(data, wells)
-    d <- tidyr::unnest(d)
+    d <- tidyr::unnest(d, cols = c(.data$measure, .data$well))
     d <- dplyr::group_by(d, .data$plate, .data$well)
     d <- dplyr::mutate(d, runtime = as.integer(.data$datetime - min(.data$datetime)))
     d <- dplyr::ungroup(d)

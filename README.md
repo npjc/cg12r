@@ -1,9 +1,13 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-[![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+<!-- badges: start -->
+
+[![Lifecycle:
+maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![CRAN
 status](http://www.r-pkg.org/badges/version/readcg12)](https://cran.r-project.org/package=readcg12)
+<!-- badges: end -->
 
 Read, ~~Validate~~, ~~Simulate~~ and ~~Write~~ CG-12 instrument
 files.
@@ -21,7 +25,7 @@ remotes::install_github("npjc/readcg12")
 
 ``` r
 library(readcg12)
-file <- cg12_example("12x96MTP_example.txt")
+file <- cg12_example("cg12-example1.txt")
 read_cg12(file)
 #> # A tibble: 123,744 x 4
 #>    plate well  runtime measure
@@ -59,7 +63,8 @@ read_cg12(file, all_fields = TRUE)
 ### To visualize the parsed output with the `mtpview` pkg:
 
 ``` r
-library(mtpview)
+library(ggplot2)
+library(mtpview1)
 d <- read_cg12(file)
 
 mtp_ggplot(d, aes(plate = plate, well = well)) + 
