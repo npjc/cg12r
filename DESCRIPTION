@@ -17,7 +17,7 @@ Imports:
     readr,
     stringr,
     rlang,
-    mtputils (>= 0.1.0)
+    mtputils (>= 0.1.1)
 Suggests: testthat
 RoxygenNote: 6.1.1
 Remotes:  
